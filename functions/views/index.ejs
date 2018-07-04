@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <title>Oh, barak!</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body>
+<div class="center">
+  <div class="button" id="ohbarak">oh barak</div><br><br>
+  <label><input type="checkbox" id="nsfw"> Include NSFW</label>
+</div>
+
+<script>
+    let all_ohbaraks = <%- ohbaraks %>;
+    let ohbaraks = all_ohbaraks.filter(ohbarak => !ohbarak.nsfw);
+
+    document.getElementById("ohbarak").addEventListener("click", function() {
+        let ohbarak = ohbaraks[Math.floor(Math.random()*ohbaraks.length)];
+        new Audio(ohbarak.url).play();
+    });
+
+    document.getElementById("nsfw").addEventListener("change", function() {
+        if (this.checked)
+            ohbaraks = all_ohbaraks;
+        else
+            ohbaraks = all_ohbaraks.filter(ohbarak => !ohbarak.nsfw);
+    });
+</script>
+</body>
+</html>
