@@ -5,6 +5,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+var bodyParser = require('body-parser')
 
 
 
@@ -21,6 +22,8 @@ const database = admin.database();
 const storageBucket = admin.storage().bucket(fileBucket);
 
 const indexRouter = require('./routes/index')(database, storageBucket);
+const recordRouter = require('./routes/record')();
+const uploadRouter = require('./routes/upload')(database, storageBucket);
 
 
 const app = express();
@@ -36,6 +39,8 @@ app.use(cookieParser());
 
 /* GET home page. */
 app.use('/', indexRouter);
+app.use('/record', recordRouter);
+app.use('/upload', uploadRouter);
 
 // error handler
 app.use(function(err, req, res, next) {

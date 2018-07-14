@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+    <title>Oh, barak!</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+
+    <div class="center">
+        <div class="button" id="ohbarak">record</div><br><br>
+        <span id="recording"></span> <button id="upload">Upload</button>
+    </div>
+
+
+    <script>
+        let recorder;
+        let recording;
+        let recordingSpan = document.getElementById("recording");
+        let button = document.getElementById("ohbarak");
+        let upload = document.getElementById("upload");
+
+        function startRecording() {
+            recorder.record();
+        }
+
+        function stopRecording() {
+            recorder.stop();
+            createDownloadLink();
+            recorder.clear();
+        }
+
+        function createDownloadLink() {
+            recorder.exportWAV(function(blob) {
+                recording = blob;
+
+                let au = document.createElement('audio');
+                au.controls = true;
+                au.src = URL.createObjectURL(blob);
+
+                recordingSpan.innerHTML = "";
+                recordingSpan.appendChild(au);
+            });
+        }
+
+        window.onload = function init() {
+            try {
+                // webkit shim
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+                window.URL = window.URL || window.webkitURL;
+
+                navigator.getUserMedia(
+                    {audio: true},
+                    (stream) => recorder = new Recorder(new AudioContext().createMediaStreamSource(stream)),
+                    (e) => console.log(e)
+                );
+            } catch (e) {
+                alert('No web audio support in this browser!');
+            }
+        };
+
+        function sendOhbarak() {
+            if (!recording) return;
+
+            postForm('/upload', {ohbarak: recording}).then(token => {
+                get('/upload', {token: token})
+            });
+        }
+
+
+
+
+        function postForm(url, data) {
+            let formData = new FormData();
+            for (let key in data) {
+                formData.append(key, data[key]);
+            }
+            return post(url, formData);
+        }
+
+
+
+        function post(url, data){
+
+            return new Promise(function (resolve, reject) {
+                let request = new XMLHttpRequest();
+                request.onreadystatechange = function() {
+                    if (request.readyState === 4) {
+                        resolve(request.response);
+                    }
+                }
+                request.open("POST", url);
+
+                request.send(data);
+            });
+        }
+
+        function get(url, data){
+
+            return new Promise(function (resolve, reject) {
+                let request = new XMLHttpRequest();
+                request.onreadystatechange = function() {
+                    if (request.readyState === 4) {
+                        resolve(request.response);
+                    }
+                }
+
+                let param = "";
+
+                for (let key in data) {
+                    param += `${key}=${data[key]}&`;
+                }
+
+
+                request.open("GET", `${url}?${param}`);
+
+                request.send(data);
+            });
+        }
+
+        button.addEventListener("mousedown", startRecording);
+        button.addEventListener("mouseup", stopRecording);
+        button.addEventListener("touchstart", startRecording);
+        button.addEventListener("touchend", stopRecording);
+        upload.addEventListener("click", function() {
+            sendOhbarak();
+        });
+    </script>
+
+    <script src="scripts/recorder.js"></script>
+</body>
+</html>

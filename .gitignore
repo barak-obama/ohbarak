@@ -75,4 +75,5 @@ fabric.properties
 /functions/.eslintrc.json
 /functions/test.js
 /functions/functions/node_modules/
-/functions/test.js
+/functions/package-lock.json
+/functions/uploads/
