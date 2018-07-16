@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+    <title>Oh, barak!</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/styles/styles.css">
+    <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyBn30tlLjzArieS5qcrTAKtEzgu1_K6BVI",
+            authDomain: "ohbarak-42e3f.firebaseapp.com",
+            databaseURL: "https://ohbarak-42e3f.firebaseio.com",
+            projectId: "ohbarak-42e3f",
+            storageBucket: "ohbarak-42e3f.appspot.com",
+            messagingSenderId: "1065694035632"
+        };
+        firebase.initializeApp(config);
+    </script>
+
+
+</head>
+<body>
+<div class="center">
+    <h1> You have to be sighed in in order to access this page </h1>
+</div>
+
+<script>
+
+    let provider = new firebase.auth.GoogleAuthProvider();
+
+    setTimeout(() => {
+        firebase.auth().signInWithPopup(provider).then(function(result) {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+//            let token = result.credential.accessToken;
+
+            firebase.auth().currentUser.getIdToken(true).then(function(token) {
+
+                document.cookie = `__session=${token} ;max-age=3600`;
+
+                location.reload();
+
+                console.log(token);
+            }.bind(this));
+
+
+
+//            location.reload();
+            // ...
+        }).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+            // ...
+        });
+    }, 1000);
+
+
+</script>
+</body>
+</html>

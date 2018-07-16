@@ -36,6 +36,7 @@ module.exports = function (database, storageBucket) {
 
 
     router.get('/', function(req, res, next) {
+
         let token = req.query.token;
 
         let file_location = `${token}.wav`;
@@ -47,13 +48,13 @@ module.exports = function (database, storageBucket) {
             database.ref('unapproved').push(file_location, err => {
                 if(err){
                     console.log(err);
-                    res.send(err);
+                    res.status(500).send("error");
                     return;
                 }
                 fs.unlink(`uploads/${token}`, (e) => {
                     if (e){
                         console.log(e);
-                        res.send(e);
+                        res.status(500).send("error");
                         return;
                     }
                     res.send('yayyyy');

@@ -27,7 +27,7 @@ function getApprovedTracks(database, bucket){
 
     let promises = [];
     return new Promise(function (resolve, reject) {
-        database.ref('approved').on('value', function (audio_files) {
+        database.ref('approved').once('value', function (audio_files) {
             audio_files = Object.values(audio_files.val());
 
             for(let i = 0; i < audio_files.length; i++){

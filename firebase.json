@@ -27,6 +27,14 @@
       {
         "source": "/approve",
         "function": "app"
+      },
+      {
+        "source": "/approve/approve",
+        "function": "app"
+      },
+      {
+        "source": "/approve/reject",
+        "function": "app"
       }
     ]
   }

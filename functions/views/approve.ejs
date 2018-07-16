@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+    <title>Oh, barak!</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/styles/styles.css">
+    <script src="../scripts/approve.js"></script>
+    <script src="../scripts/ajax_util.js"></script>
+
+</head>
+<body>
+<div class="center">
+    <% if(empty){ %>
+        <h1> No ohbaraks to approve </h1>
+    <% } %>
+    <ul id="ohbaraks">
+    <% ohbaraks.forEach(function (ohbarak, index) {
+
+        %>
+    <li id="ohbarak<%= index %>" style="padding: 10px">
+        <div>
+            <audio controls="true" src="<%= ohbarak.url%>"></audio>
+        </div>
+
+        <div>
+            <input placeholder="Ohbarak's name" id="name<%=index%>"/>
+            <label><input type="checkbox" id="nsfw<%= index %>">NSFW</label>
+            <input type="hidden" value="<%= ohbarak.token %>" id="token<%= index %>">
+        </div>
+
+        <div>
+            <button onclick="approve(<%= index %>)">
+                Approve
+            </button>
+            <button onclick="reject(<%= index %>)">
+                Reject
+            </button>
+        </div>
+
+
+    </li>
+
+    <% }); %>
+    </ul>
+
+
+</div>
+</body>
+</html>

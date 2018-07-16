@@ -18,12 +18,13 @@ admin.initializeApp({
 
 const fileBucket = "gs://ohbarak-42e3f.appspot.com";
 const database = admin.database();
-
 const storageBucket = admin.storage().bucket(fileBucket);
+const auth = admin.auth();
 
 const indexRouter = require('./routes/index')(database, storageBucket);
 const recordRouter = require('./routes/record')();
 const uploadRouter = require('./routes/upload')(database, storageBucket);
+const approveRouter = require('./routes/approve')(database, storageBucket, auth);
 
 
 const app = express();
@@ -33,14 +34,15 @@ app.set('view engine', 'ejs');
 
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 /* GET home page. */
 app.use('/', indexRouter);
 app.use('/record', recordRouter);
 app.use('/upload', uploadRouter);
+app.use('/approve', approveRouter);
 
 // error handler
 app.use(function(err, req, res, next) {
