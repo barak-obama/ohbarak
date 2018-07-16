@@ -6,16 +6,20 @@ const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 require('../stacktrace');
 const fs = require('fs');
+const authCheck = require('./AuthCheck');
 
 
 
 
 
-module.exports = function (database, storageBucket) {
+module.exports = function (database, storageBucket, auth) {
 
 
     /* GET home page. */
-    router.post('/', function(req, res, next) {
+    router.post('/', authCheck.status403(auth), function(req, res, next) {
+
+        console.log('line', __line);
+
         let form = new multiparty.Form({uploadDir: './uploads'});
 
         form.parse(req, function(err, fields, files) {
@@ -35,9 +39,10 @@ module.exports = function (database, storageBucket) {
     });
 
 
-    router.get('/', function(req, res, next) {
+    router.get('/', authCheck.status403(auth), function(req, res, next) {
 
         let token = req.query.token;
+        let email = req.user.email;
 
         let file_location = `${token}.wav`;
 
@@ -45,7 +50,7 @@ module.exports = function (database, storageBucket) {
                     destination: `unapproved/${file_location}`
         }).then(() => {
 
-            database.ref('unapproved').push(file_location, err => {
+            database.ref('unapproved').push({file: file_location, email: email}, err => {
                 if(err){
                     console.log(err);
                     res.status(500).send("error");

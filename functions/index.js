@@ -22,8 +22,8 @@ const storageBucket = admin.storage().bucket(fileBucket);
 const auth = admin.auth();
 
 const indexRouter = require('./routes/index')(database, storageBucket);
-const recordRouter = require('./routes/record')();
-const uploadRouter = require('./routes/upload')(database, storageBucket);
+const recordRouter = require('./routes/record')(auth);
+const uploadRouter = require('./routes/upload')(database, storageBucket, auth);
 const approveRouter = require('./routes/approve')(database, storageBucket, auth);
 
 

@@ -31,11 +31,11 @@ function getApprovedTracks(database, bucket){
             audio_files = Object.values(audio_files.val());
 
             for(let i = 0; i < audio_files.length; i++){
-                const file_name = audio_files[i];
-                const token = file_name;
+                const fileinfo = audio_files[i];
+                const token = fileinfo.file;
 
                 let ohbarak = {
-                    nsfw: file_name.includes("nsfw")
+                    nsfw: token.includes("nsfw")
                 };
 
 

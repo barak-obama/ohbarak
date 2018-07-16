@@ -19,17 +19,18 @@
 
         %>
     <li id="ohbarak<%= index %>" style="padding: 10px">
-        <div>
+        <h2 class="center_horizontally"> <%= ohbarak.email %> </h2>
+        <div class="center_horizontally">
             <audio controls="true" src="<%= ohbarak.url%>"></audio>
         </div>
 
-        <div>
+        <div class="center_horizontally">
             <input placeholder="Ohbarak's name" id="name<%=index%>"/>
             <label><input type="checkbox" id="nsfw<%= index %>">NSFW</label>
             <input type="hidden" value="<%= ohbarak.token %>" id="token<%= index %>">
         </div>
 
-        <div>
+        <div class="center_horizontally">
             <button onclick="approve(<%= index %>)">
                 Approve
             </button>

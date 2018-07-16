@@ -32,12 +32,14 @@ function getUnapprovedTracks(database, bucket) {
             audio_files = audio_files.val();
 
             for (let key in audio_files) {
-                const file_name = audio_files[key];
+                const file_name = audio_files[key].file;
+                const email = audio_files[key].email;
 
                 promises.push(getTrack(bucket, file_name).then(url => {
                     ohbaraks.push({
                         url: url,
-                        token: key
+                        token: key,
+                        email: email
                     });
                 }));
             }
@@ -52,26 +54,26 @@ function getUnapprovedTracks(database, bucket) {
 
 
 function approve(storageBucket, database, token, name, nsfw) {
-
     return move(storageBucket, database, token, name, nsfw, 'approved');
-
 }
 
 function reject(storageBucket, database, token, name, nsfw) {
-
-    return move(storageBucket, database, token, name, nsfw, 'reject');
-
+    return move(storageBucket, database, token, name, nsfw, 'rejected');
 }
 
 function move(storageBucket, database, token, name, nsfw, to){
     let ref = database.ref(`unapproved/${token}`);
 
     return new Promise(function (resolve, reject) {
-        ref.once('value', function (filename) {
-            filename = filename.val();
-            if(!filename){
+        ref.once('value', function (fileinfo) {
+            fileinfo = fileinfo.val();
+
+            if(!fileinfo){
                 reject("No such file");
             }
+
+            let filename = fileinfo.file;
+            let email = fileinfo.email;
 
 
             let new_ref = database.ref(to).push();
@@ -84,7 +86,7 @@ function move(storageBucket, database, token, name, nsfw, to){
             let approved_name = `${new_ref.key}_${name}${nsfw_suffix}.wav`;
 
 
-            new_ref.set(approved_name);
+            new_ref.set({file: approved_name, email:  email});
 
             storageBucket
                 .file(`unapproved/${filename}`)
@@ -107,10 +109,10 @@ function isAdmin(database, unauthorized) {
         database.ref('admin').once('value', function (admins) {
             admins = Object.values(admins.val());
 
-            if (admins.includes(req.user.user_id))
+            if (admins.includes(req.user.email))
                 next();
             else
-                unauthorized(res, req);
+                unauthorized(req, res);
         });
     }
 }
@@ -137,7 +139,7 @@ module.exports = function (database, storageBucket, auth) {
     });
 
 
-    router.post('/:decision', function (req, res) {
+    router.post('/:decision', authCheck.status403(auth), admin_unauthorized, function (req, res) {
         let approved = req.params.decision === 'approve';
         let token = req.body.token;
         let name = req.body.name || "";
@@ -151,6 +153,7 @@ module.exports = function (database, storageBucket, auth) {
                 res.status(200).send("approved");
             })
                 .catch(err => {
+                    console.error(err);
                     res.status(500).send(err);
                 });
 
@@ -161,6 +164,7 @@ module.exports = function (database, storageBucket, auth) {
                 res.status(200).send("rejected");
             })
                 .catch(err => {
+                    console.error(err);
                     res.status(500).send(err);
                 });
 

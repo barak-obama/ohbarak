@@ -9,8 +9,11 @@
 <body>
 
     <div class="center">
-        <div class="button" id="ohbarak">record</div><br><br>
-        <span id="recording"></span> <button id="upload">Upload</button>
+        <div class="button center_horizontally" id="ohbarak">record</div><br><br>
+        <div id="recording" class="center_horizontally"></div>
+        <div class="center_horizontally">
+            <button id="upload">Upload</button>
+        </div>
     </div>
 
 
@@ -64,8 +67,8 @@
         function sendOhbarak() {
             if (!recording) return;
 
-            postForm('/upload', {ohbarak: recording}).then(token => {
-                get('/upload', {token: token}).catch(err => {
+            postForm('/upload', {ohbarak: recording}, { withCredentials: true }).then(token => {
+                get('/upload', {token: token, email: '<%=email%>'}, { withCredentials: true }).catch(err => {
                    if(err.status === 500){
                        sendOhbarak();
                    }
