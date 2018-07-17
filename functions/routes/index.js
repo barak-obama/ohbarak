@@ -28,24 +28,26 @@ function getApprovedTracks(database, bucket){
     let promises = [];
     return new Promise(function (resolve, reject) {
         database.ref('approved').once('value', function (audio_files) {
-            audio_files = Object.values(audio_files.val());
 
-            for(let i = 0; i < audio_files.length; i++){
-                const fileinfo = audio_files[i];
-                const token = fileinfo.file;
+            audio_files = audio_files.val();
+
+            for (let key in audio_files) {
+                const file_name = audio_files[key].file;
 
                 let ohbarak = {
-                    nsfw: token.includes("nsfw")
+                    nsfw: file_name.includes("nsfw")
                 };
 
 
-                promises.push(getTrack(bucket, token).then(url => {
+                promises.push(getTrack(bucket, file_name).then(url => {
                     ohbarak.url = url;
                     ohbaraks.push(ohbarak);
+                    return ohbaraks;
                 }));
             }
 
-            Promise.all(promises).then(() => {
+            return Promise.all(promises)
+                .then(() => {
                 resolve(ohbaraks);
             });
         });
@@ -59,11 +61,15 @@ module.exports = function (database, storageBucket) {
 
     /* GET home page. */
     router.get('/', function(req, res, next) {
+
+
         getApprovedTracks(database, storageBucket).then(ohbaraks => {
-            res.render('index', {
+            return res.render('index', {
                 ohbaraks: JSON.stringify(ohbaraks),
                 user: req.user
             });
+        }).catch(err => {
+            throw err;
         });
     });
 

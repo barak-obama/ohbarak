@@ -1,5 +1,4 @@
 const express = require('express');
-require('../stacktrace');
 const router = express.Router();
 const multer = require('multer');
 var upload = multer();
@@ -17,6 +16,8 @@ function getTrack(bucket, token) {
             }
         ).then(function (url) {
             resolve(url[0]);
+        }).catch(err => {
+            throw  err;
         });
     });
 }
@@ -45,6 +46,8 @@ function getUnapprovedTracks(database, bucket) {
 
             Promise.all(promises).then(() => {
                 resolve(ohbaraks);
+            }).catch(err => {
+                throw err;
             });
         });
     });
@@ -68,7 +71,7 @@ function move(storageBucket, database, token, name, nsfw, to){
             fileinfo = fileinfo.val();
 
             if(!fileinfo){
-                reject("No such file");
+                reject(Error("No such file"));
             }
 
             let filename = fileinfo.file;
@@ -103,9 +106,6 @@ function move(storageBucket, database, token, name, nsfw, to){
 }
 
 
-
-
-
 module.exports = function (database, storageBucket) {
 
     /* GET home page. */
@@ -121,7 +121,9 @@ module.exports = function (database, storageBucket) {
                 ohbaraks: ohbaraks,
                 empty: ohbaraks.length === 0,
                 user: req.user
-            }, );
+            });
+        }).catch(err => {
+            throw err;
         });
     });
 
