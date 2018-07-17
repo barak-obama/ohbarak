@@ -35,6 +35,10 @@
       {
         "source": "/approve/reject",
         "function": "app"
+      },
+      {
+        "source": "/our_team",
+        "function": "app"
       }
     ]
   }

@@ -7,11 +7,10 @@ module.exports = function () {
 
     /* GET home page. */
     router.get('/', function(req, res, next) {
-        if(req.user === null) {
-            res.render('sighIn');
-            return;
-        }
-        res.render('record', {user: req.user});
+
+        console.log('out team!!!');
+
+        res.render('our_team', {user: req.user});
     });
 
     return router;

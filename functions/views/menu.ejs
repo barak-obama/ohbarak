@@ -1,0 +1,44 @@
+<div class="menu">
+
+
+<link rel="stylesheet" href="/styles/menu.css">
+<script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyBn30tlLjzArieS5qcrTAKtEzgu1_K6BVI",
+        authDomain: "ohbarak-42e3f.firebaseapp.com",
+        databaseURL: "https://ohbarak-42e3f.firebaseio.com",
+        projectId: "ohbarak-42e3f",
+        storageBucket: "ohbarak-42e3f.appspot.com",
+        messagingSenderId: "1065694035632"
+    };
+    firebase.initializeApp(config);
+</script>
+<script src="scripts/auth_util.js"></script>
+
+<input type="checkbox" class="openSidebarMenu" id="openSidebarMenu">
+<label for="openSidebarMenu" class="sidebarIconToggle">
+    <div class="spinner diagonal part-1"></div>
+    <div class="spinner horizontal"></div>
+    <div class="spinner diagonal part-2"></div>
+</label>
+<div id="sidebarMenu">
+    <ul class="sidebarMenuInner">
+        <li><a href="/"> Oh Barak <span>By Hillai & Barak</span></a></li>
+        <li><a href="/">Listen to Ohbaraks</a></li>
+        <li><a href="/record">Record Your Own Ohbarak</a></li>
+        <% if(user === null){%>
+            <li><a onclick="popup_signing()">Sign In</a></li>
+        <% } else {
+               if(user.is_admin) {%>
+                   <li><a href="/approve">Approve Ohbaraks</a></li>
+        <% } %>
+        <li><a onclick="signOut()">Sign Out</a></li>
+        <%}%>
+
+        <li><a href="/our_team">Our Team</a></li>
+    </ul>
+</div>
+
+</div>

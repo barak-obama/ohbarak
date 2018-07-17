@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css?family=Varela+Round');
+
+img {
+    width: 40%;
+
+}
+
+h3 {
+    margin-top: 0px;
+}
+
+.center {
+    width: 60%;
+    height: 60%;
+    font-family: 'Varela Round', sans-serif;
+    /*margin: 3% 20% 20%;*/
+}
+
+.title {
+    font-size: 50px;
+    margin-bottom: 20px;
+
+    text-align: center;
+}
+
+.center > .person {
+    width: 47%;
+    height: 100%;
+}
+
+.person .info {
+    margin-left: 5%;
+    float: right;
+    width: 55%;
+}
+
+.right {
+    float: right;
+    /*margin-left: 5%;*/
+    /*width: 45%;*/
+}
+
+.left {
+    float: left;
+}
+
+.right img {
+    float: left;
+}
+
+.right .info {
+    float: right;
+}
+
+.right > .info > * {
+    float: left;
+}
+
+
+
+.job_title {
+    margin-bottom: 20px;
+}
+
+.info_text {
+    margin-bottom: 20px;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+    .right {
+        float: none;
+    }
+    .left {
+        float: none;
+    }
+    .center .person {
+        width: 100%;
+    }
+
+    .center {
+        width: 95%;
+    }
+
+    .title {
+        font-size: 30px;
+    }
+
+}
+

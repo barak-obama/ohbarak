@@ -1,5 +1,4 @@
 const express = require('express');
-const authCheck = require('./AuthCheck');
 require('../stacktrace');
 const router = express.Router();
 const multer = require('multer');
@@ -104,42 +103,35 @@ function move(storageBucket, database, token, name, nsfw, to){
 }
 
 
-function isAdmin(database, unauthorized) {
-    return (req, res, next) => {
-        database.ref('admin').once('value', function (admins) {
-            admins = Object.values(admins.val());
-
-            if (admins.includes(req.user.email))
-                next();
-            else
-                unauthorized(req, res);
-        });
-    }
-}
 
 
-module.exports = function (database, storageBucket, auth) {
 
-
-    let sighInAuthCheck = authCheck.authCheck(auth, (req, res, next) => {
-        res.render('sighIn');
-    });
-
-    let admin_redirect = isAdmin(database, (req, res) => res.render('404'));
-    let admin_unauthorized = isAdmin(database, (req, res) => res.status(403).send('Unauthorized'));
+module.exports = function (database, storageBucket) {
 
     /* GET home page. */
-    router.get('/', sighInAuthCheck, admin_redirect, function (req, res, next) {
+    router.get('/', function (req, res, next) {
+
+        if(req.user === null || req.user.is_admin === false){
+            res.render('404');
+            return;
+        }
+
         getUnapprovedTracks(database, storageBucket).then(ohbaraks => {
             res.render('approve', {
                 ohbaraks: ohbaraks,
-                empty: ohbaraks.length === 0
+                empty: ohbaraks.length === 0,
+                user: req.user
             }, );
         });
     });
 
 
-    router.post('/:decision', authCheck.status403(auth), admin_unauthorized, function (req, res) {
+    router.post('/:decision', function (req, res) {
+
+        if(req.user === null || req.user.is_admin === false){
+            res.status(403).send('Unauthorized');
+        }
+
         let approved = req.params.decision === 'approve';
         let token = req.body.token;
         let name = req.body.name || "";

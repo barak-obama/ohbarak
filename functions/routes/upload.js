@@ -6,17 +6,20 @@ const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 require('../stacktrace');
 const fs = require('fs');
-const authCheck = require('./AuthCheck');
 
 
 
 
 
-module.exports = function (database, storageBucket, auth) {
-
+module.exports = function (database, storageBucket) {
 
     /* GET home page. */
-    router.post('/', authCheck.status403(auth), function(req, res, next) {
+    router.post('/', function(req, res, next) {
+
+        if(req.user === null){
+            res.status(403).send('Unauthorized');
+            return;
+        }
 
         console.log('line', __line);
 
@@ -39,7 +42,12 @@ module.exports = function (database, storageBucket, auth) {
     });
 
 
-    router.get('/', authCheck.status403(auth), function(req, res, next) {
+    router.get('/', function(req, res, next) {
+
+        if(req.user === null){
+            res.status(403).send('Unauthorized');
+            return;
+        }
 
         let token = req.query.token;
         let email = req.user.email;

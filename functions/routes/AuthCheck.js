@@ -10,6 +10,8 @@ const validateFirebaseIdToken = (req, res, next, auth, unauthorized) => {
             'Make sure you authorize your request by providing the following HTTP header:',
             'Authorization: Bearer <Firebase ID Token>',
             'or by passing a "__session" cookie.');
+
+        req.user = null;
         unauthorized(req, res, next);
         return;
     }
@@ -25,6 +27,7 @@ const validateFirebaseIdToken = (req, res, next, auth, unauthorized) => {
         idToken = req.cookies.__session;
     } else {
         // No cookie
+        req.user = null;
         unauthorized(req, res, next);
         return;
     }
@@ -35,9 +38,35 @@ const validateFirebaseIdToken = (req, res, next, auth, unauthorized) => {
         return next();
     }).catch((error) => {
         console.error('Error while verifying Firebase ID token:', error);
+        req.user = null;
         unauthorized(req, res, next);
     });
 };
+
+
+
+
+
+function isAdmin(database, unauthorized) {
+    return (req, res, next) => {
+
+        if(!req.user || req.user === null) {
+            unauthorized(req, res, next);
+            return;
+        }
+
+        database.ref('admin').once('value', function (admins) {
+            admins = Object.values(admins.val());
+
+            req.user.is_admin = admins.includes(req.user.email);
+
+            if (req.user.is_admin)
+                return next();
+            else
+                unauthorized(req, res, next);
+        });
+    }
+}
 
 
 function authCheck(auth, unauthorized) {
@@ -46,10 +75,15 @@ function authCheck(auth, unauthorized) {
     }
 }
 
-module.exports.status403 = function (auth) {
-    return authCheck(auth, (req, res, next) => {
-        res.status(403).send('Unauthorized');
-    })
+module.exports = function (auth, database) {
+    return {
+        status403: authCheck(auth, (req, res, next) => res.status(403).send('Unauthorized')),
+        authCheck: unauthorized =>  authCheck(auth, unauthorized),
+        authPass: authCheck(auth, (req, res, next) => next()),
+        sighInAuthCheck: authCheck(auth, (req, res, next) => res.render('sighIn')),
+        admin_redirect: isAdmin(database, (req, res, next) => res.render('404')),
+        adminStatus403: isAdmin(database, (req, res, next) => res.status(403).send('Unauthorized')),
+        admin_pass: isAdmin(database, (req, res, next) => next())
+    }
 };
 
-module.exports.authCheck = authCheck;

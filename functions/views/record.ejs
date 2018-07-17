@@ -8,6 +8,8 @@
 </head>
 <body>
 
+    <% include menu.ejs%>
+
     <div class="center">
         <div class="button center_horizontally" id="ohbarak">record</div><br><br>
         <div id="recording" class="center_horizontally"></div>
@@ -68,7 +70,7 @@
             if (!recording) return;
 
             postForm('/upload', {ohbarak: recording}, { withCredentials: true }).then(token => {
-                get('/upload', {token: token, email: '<%=email%>'}, { withCredentials: true }).catch(err => {
+                get('/upload', {token: token, email: '<%=user.email%>'}, { withCredentials: true }).catch(err => {
                    if(err.status === 500){
                        sendOhbarak();
                    }

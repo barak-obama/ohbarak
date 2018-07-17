@@ -5,7 +5,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 
 
 
@@ -22,9 +22,12 @@ const storageBucket = admin.storage().bucket(fileBucket);
 const auth = admin.auth();
 
 const indexRouter = require('./routes/index')(database, storageBucket);
-const recordRouter = require('./routes/record')(auth);
-const uploadRouter = require('./routes/upload')(database, storageBucket, auth);
-const approveRouter = require('./routes/approve')(database, storageBucket, auth);
+const recordRouter = require('./routes/record')();
+const uploadRouter = require('./routes/upload')(database, storageBucket);
+const approveRouter = require('./routes/approve')(database, storageBucket);
+const ourTeamRouter = require('./routes/our_team')();
+
+const authCheck = require('./routes/AuthCheck')(auth, database);
 
 
 const app = express();
@@ -37,12 +40,14 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(authCheck.authPass, authCheck.admin_pass);
 
 /* GET home page. */
 app.use('/', indexRouter);
 app.use('/record', recordRouter);
 app.use('/upload', uploadRouter);
 app.use('/approve', approveRouter);
+app.use('/our_team', ourTeamRouter);
 
 // error handler
 app.use(function(err, req, res, next) {

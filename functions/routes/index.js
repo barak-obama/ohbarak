@@ -55,13 +55,14 @@ function getApprovedTracks(database, bucket){
 
 
 
-module.exports = function (starCountRef, storageBucket) {
+module.exports = function (database, storageBucket) {
 
     /* GET home page. */
     router.get('/', function(req, res, next) {
-        getApprovedTracks(starCountRef, storageBucket).then(ohbaraks => {
+        getApprovedTracks(database, storageBucket).then(ohbaraks => {
             res.render('index', {
-                ohbaraks: JSON.stringify(ohbaraks)
+                ohbaraks: JSON.stringify(ohbaraks),
+                user: req.user
             });
         });
     });

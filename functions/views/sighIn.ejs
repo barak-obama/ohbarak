@@ -18,46 +18,20 @@
         };
         firebase.initializeApp(config);
     </script>
-
+    <script src="scripts/auth_util.js"></script>
 
 </head>
 <body>
 <div class="center">
-    <h1> You have to be sighed in in order to access this page </h1>
+    <h2 class="center_horizontally"> You have to be sighed in <br> in order to access this page </h2>
 </div>
 
 <script>
 
-    let provider = new firebase.auth.GoogleAuthProvider();
+
 
     setTimeout(() => {
-        firebase.auth().signInWithPopup(provider).then(function(result) {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-//            let token = result.credential.accessToken;
-
-            firebase.auth().currentUser.getIdToken(true).then(function(token) {
-
-                document.cookie = `__session=${token} ;max-age=3600`;
-
-                location.reload();
-
-                console.log(token);
-            }.bind(this));
-
-
-
-//            location.reload();
-            // ...
-        }).catch(function(error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            // The email of the user's account used.
-            var email = error.email;
-            // The firebase.auth.AuthCredential type that was used.
-            var credential = error.credential;
-            // ...
-        });
+        popup_signing();
     }, 1000);
 
 
