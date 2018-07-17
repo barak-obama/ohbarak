@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-var upload = multer();
+const generateName = require('../util/nameGenerator');
 
 
 
@@ -85,7 +85,7 @@ function move(storageBucket, database, token, name, nsfw, to){
                 nsfw_suffix = '.nsfw';
             }
 
-            let approved_name = `${new_ref.key}_${name}${nsfw_suffix}.wav`;
+            let approved_name = `${generateName(10)}_${name}${nsfw_suffix}.wav`;
 
 
             new_ref.set({file: approved_name, email:  email});

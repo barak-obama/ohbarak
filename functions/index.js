@@ -27,7 +27,7 @@ const uploadRouter = require('./routes/upload')(database, storageBucket);
 const approveRouter = require('./routes/approve')(database, storageBucket);
 const ourTeamRouter = require('./routes/our_team')();
 
-const authCheck = require('./routes/AuthCheck')(auth, database);
+const authCheck = require('./util/AuthCheck')(auth, database);
 
 
 const app = express();
@@ -61,5 +61,3 @@ app.use(function(err, req, res, next) {
 });
 
 exports.app = functions.https.onRequest(app);
-
-

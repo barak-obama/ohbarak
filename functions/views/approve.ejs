@@ -13,10 +13,14 @@
 
 <% include menu.ejs %>
 
-<div class="center">
+
     <% if(empty){ %>
+    <div class="center">
         <h1> No ohbaraks to approve </h1>
-    <% } %>
+    <% } else{ %>
+        <div class="center_horizontally">
+        <%}%>
+
     <ul id="ohbaraks">
     <% ohbaraks.forEach(function (ohbarak, index) {
 

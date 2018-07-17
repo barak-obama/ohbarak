@@ -55,8 +55,21 @@ function isAdmin(database, unauthorized) {
             return;
         }
 
-        database.ref('admin').once('value', function (admins) {
-            admins = Object.values(admins.val());
+        database.ref('admin').once('value', function (snapshot) {
+            snapshot = snapshot.val();
+
+            let admins;
+
+            if(Array.isArray(snapshot)){
+                admins = snapshot;
+            } else {
+                admins = [];
+                for (let key in snapshot) {
+                    admins.push(snapshot[key]);
+                }
+            }
+
+
 
             req.user.is_admin = admins.includes(req.user.email);
 
