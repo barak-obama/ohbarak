@@ -14,7 +14,7 @@ function getTrack(bucket, token){
         // admin.storage().bucket(fileBucket)
         bucket.file(filePath).getSignedUrl({
             action: "read",
-            expires: "01-01-2019"}
+            expires: "01-01-2020"}
         ).then(function (url){
             resolve(url[0]);
         });
@@ -69,6 +69,7 @@ module.exports = function (database, storageBucket) {
                 user: req.user
             });
         }).catch(err => {
+            res.send(err);
             throw err;
         });
     });

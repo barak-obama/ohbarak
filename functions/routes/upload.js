@@ -3,10 +3,11 @@ const multiparty = require('multiparty');
 const util = require('util');
 const multer  = require('multer');
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
 require('../stacktrace');
 const fs = require('fs');
+os = require('os');
 
+const upload_dir = `${os.tmpdir()}/uploads`;
 
 
 
@@ -23,7 +24,7 @@ module.exports = function (database, storageBucket) {
 
         console.log('line', __line);
 
-        let form = new multiparty.Form({uploadDir: './uploads'});
+        let form = new multiparty.Form({dest: upload_dir});
 
         form.parse(req, function(err, fields, files) {
 
@@ -50,11 +51,12 @@ module.exports = function (database, storageBucket) {
         }
 
         let token = req.query.token;
+        console.log(`token = ${token}`);
         let email = req.user.email;
 
         let file_location = `${token}.wav`;
 
-        storageBucket.upload(`uploads/${token}`, {
+        storageBucket.upload(`${upload_dir}/${token}`, {
                     destination: `unapproved/${file_location}`
         }).then(() => {
 
@@ -64,7 +66,7 @@ module.exports = function (database, storageBucket) {
                     res.status(500).send("error");
                     return;
                 }
-                fs.unlink(`uploads/${token}`, (e) => {
+                fs.unlink(`${upload_dir}/${token}`, (e) => {
                     if (e){
                         console.log(e);
                         res.status(500).send("error");
