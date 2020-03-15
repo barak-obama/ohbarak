@@ -1,13 +1,14 @@
 const express = require('express');
-const multiparty = require('multiparty');
-const util = require('util');
-const multer  = require('multer');
+const Busboy = require('busboy');
+const nameGenerator = require('../util/nameGenerator');
 const router = express.Router();
 require('../stacktrace');
 const fs = require('fs');
+const path = require("path");
 os = require('os');
 
-const upload_dir = `${os.tmpdir()}/uploads`;
+const upload_dir = path.join(os.tmpdir(),"uploads");
+
 
 
 
@@ -22,24 +23,30 @@ module.exports = function (database, storageBucket) {
             return;
         }
 
-        console.log('line', __line);
+        let file_name = nameGenerator(7);
 
-        let form = new multiparty.Form({dest: upload_dir});
 
-        form.parse(req, function(err, fields, files) {
+        let busboy = new Busboy({ headers: req.headers });
 
-            if(err){
-                console.log(err);
-                res.send(err);
-                return;
-            }
+        busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
 
-            let file_path = files.ohbarak[0].path;
+            let writeStream = fs.createWriteStream(path.join(upload_dir,file_name));
+            file.pipe(writeStream);
+            writeStream.on('finish', () => {
+                console.log('Done Writing File');
+                res.send(file_name);
+            });
 
-            let file_name = file_path.split('/')[1];
-
-            res.send(file_name);
         });
+
+
+        busboy.on('finish', function() {
+            console.log('Done parsing form!');
+        });
+        busboy.end(req.rawBody);
+
+
+
     });
 
 
@@ -66,14 +73,15 @@ module.exports = function (database, storageBucket) {
                     res.status(500).send("error");
                     return;
                 }
-                fs.unlink(`${upload_dir}/${token}`, (e) => {
-                    if (e){
-                        console.log(e);
-                        res.status(500).send("error");
-                        return;
-                    }
-                    res.send('yayyyy');
-                });
+                // fs.unlink(`${upload_dir}/${token}`, (e) => {
+                //     if (e){
+                //         console.log(e);
+                //         res.status(500).send("error");
+                //         return;
+                //     }
+                //     res.send('yayyyy');
+                // });
+                res.send('yayyyy');
             });
         }).catch(e => {
             console.log("error", e);

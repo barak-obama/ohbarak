@@ -66,13 +66,21 @@
             }
         };
 
+        let second_try_flag = false;
+
         function sendOhbarak() {
             if (!recording) return;
 
             postForm('/upload', {ohbarak: recording}, { withCredentials: true }).then(token => {
                 get('/upload', {token: token, email: '<%=user.email%>'}, { withCredentials: true }).catch(err => {
                    if(err.status === 500){
-                      // sendOhbarak();
+                      if(!second_try_flag){
+                          second_try_flag = true;
+                          sendOhbarak();
+                      } else {
+                          second_try_flag = false;
+                      }
+
                    }
                 });
             });
@@ -88,6 +96,7 @@
         button.addEventListener("touchstart", startRecording);
         button.addEventListener("touchend", stopRecording);
         upload.addEventListener("click", function() {
+            second_try_flag = false;
             sendOhbarak();
         });
     </script>
