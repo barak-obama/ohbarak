@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require("path");
 os = require('os');
 
-const upload_dir = path.join(os.tmpdir(),"uploads");
+const upload_dir = os.tmpdir();
 
 
 
