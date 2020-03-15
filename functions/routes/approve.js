@@ -141,7 +141,9 @@ module.exports = function (database, storageBucket) {
 
 
         console.log("body ", typeof(req.body));
+        console.log("body", req.body);
         console.log("token ", req.body.token);
+        
         if (approved) {
             approve(storageBucket, database, token, name, nsfw).then(() => {
                 res.status(200).send("approved");
