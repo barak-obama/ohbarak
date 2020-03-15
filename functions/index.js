@@ -1,6 +1,5 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
