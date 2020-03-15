@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const get_formated_date = require("../util/get_formated_date");
+
 
 
 
@@ -14,7 +16,7 @@ function getTrack(bucket, token){
         // admin.storage().bucket(fileBucket)
         bucket.file(filePath).getSignedUrl({
             action: "read",
-            expires: "01-01-2020"}
+            expires: get_formated_date()}
         ).then(function (url){
             resolve(url[0]);
         });

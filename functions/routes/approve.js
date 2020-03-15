@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const generateName = require('../util/nameGenerator');
+const get_formated_date = require("../util/get_formated_date");
 
 
 
@@ -12,7 +13,7 @@ function getTrack(bucket, token) {
 
         bucket.file(filePath).getSignedUrl({
                 action: "read",
-                expires: "01-01-2019"
+                expires: get_formated_date()
             }
         ).then(function (url) {
             resolve(url[0]);
