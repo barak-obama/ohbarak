@@ -24,5 +24,8 @@
     "multiparty": "^4.2.1",
     "npm": "^6.14.2"
   },
+  "engines": {
+    "node": "8"
+  },
   "private": true
 }
