@@ -165,7 +165,6 @@ module.exports = function (database, storageBucket) {
                     res.status(500).send(err);
                 });
 
-            res.send("Not Supported")
         }
     });
 
