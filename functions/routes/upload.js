@@ -4,7 +4,7 @@ const nameGenerator = require('../util/nameGenerator');
 const router = express.Router();
 require('../stacktrace');
 const fs = require('fs');
-const path = require("path");
+const path_joiner = require("path");
 os = require('os');
 
 const upload_dir = os.tmpdir();
@@ -26,11 +26,13 @@ module.exports = function (database, storageBucket) {
         let file_name = nameGenerator(7);
 
 
-        let busboy = new Busboy({ headers: req.headers });
+        let busboy = Busboy({ headers: req.headers });
 
         busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
 
-            let writeStream = fs.createWriteStream(path.join(upload_dir,file_name));
+            let tpath = path_joiner.join(upload_dir,file_name);
+            console.log(tpath);
+            let writeStream = fs.createWriteStream(tpath);
             file.pipe(writeStream);
             writeStream.on('finish', () => {
                 console.log('Done Writing File');

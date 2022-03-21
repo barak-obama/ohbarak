@@ -76,6 +76,18 @@ module.exports = function (database, storageBucket) {
         });
     });
 
+    router.get('/ohbaraks',  function(req, res, next) {
+
+
+        getApprovedTracks(database, storageBucket).then(ohbaraks => {
+            res.setHeader('Content-Type', 'application/json');
+            return res.end(JSON.stringify(ohbaraks));
+        }).catch(err => {
+            res.send(err);
+            throw err;
+        });
+    });
+
     return router;
 
 };

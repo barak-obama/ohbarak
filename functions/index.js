@@ -7,7 +7,6 @@ const logger = require('morgan');
 var bodyParser = require('body-parser');
 
 
-
 const serviceAccount = require("./ohbarak-42e3f-firebase-adminsdk-2num4-f8fe27238e.json");
 
 admin.initializeApp({
