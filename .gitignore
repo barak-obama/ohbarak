@@ -12,6 +12,7 @@
 functions/ohbarak-42e3f-firebase-adminsdk-2num4-f8fe27238e.json
 
 functions/node_modules/
+node_modules/
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/

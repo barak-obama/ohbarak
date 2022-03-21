@@ -40,6 +40,10 @@
       {
         "source": "/our_team",
         "function": "app"
+      },
+      {
+        "source": "/ohbaraks",
+        "function": "app"
       }
     ]
   }
