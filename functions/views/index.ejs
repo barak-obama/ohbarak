@@ -19,18 +19,22 @@
 
 <script>
     let all_ohbaraks = <%- ohbaraks %>;
-    let ohbaraks = all_ohbaraks.filter(ohbarak => !ohbarak.nsfw);
+    let ohbaraks_sfw = all_ohbaraks.filter(ohbarak => !ohbarak.nsfw);
+    let ohbaraks = ohbaraks_sfw;
 
-    document.getElementById("ohbarak").addEventListener("click", function() {
-        let ohbarak = ohbaraks[Math.floor(Math.random()*ohbaraks.length)];
+    function play(){
+      let ohbarak = ohbaraks[Math.floor(Math.random()*ohbaraks.length)];
         new Audio(ohbarak.url).play();
-    });
+    }
+
+    document.getElementById("ohbarak").addEventListener("click", play);
+    document.getElementById("ohbarak").addEventListener("touchstart", play);
 
     document.getElementById("nsfw").addEventListener("change", function() {
         if (this.checked)
             ohbaraks = all_ohbaraks;
         else
-            ohbaraks = all_ohbaraks.filter(ohbarak => !ohbarak.nsfw);
+            ohbaraks = ohbaraks_sfw;
     });
 </script>
 </body>
